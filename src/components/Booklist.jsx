@@ -36,11 +36,15 @@ const StyledParagraph = styled.p`
 `
 
 const Booklist = (props) => { 
+  const [allBooks , setAllBooks] = useState();
   const [selectedBook, updateSelectedBook] = useState();
   const { loading, error, data } = useQuery(getBooksQuery);
   if (loading) return <StyledParagraph>Loading...</StyledParagraph>;
   if (error) return <StyledParagraph>Error :(</StyledParagraph>;
   const { books } = data;
+  if(books.books){
+    setAllBooks(books.books)
+  }
   const bookListItems = books.map( ({ id, name }) => {
       return <StyledBookItem key={id} onClick={() => updateSelectedBook(id)}>{name}</StyledBookItem>;
   });
@@ -51,7 +55,7 @@ const Booklist = (props) => {
         <StyledBookList>
           {bookListItems}
         </StyledBookList>
-        <BookDetails selectedBook={selectedBook} />
+        <BookDetails selectedBook={selectedBook}/>
       </div>
     </>
   )

@@ -14,7 +14,7 @@ const StyledHeader = styled.h1`
   font-size: 3rem;
 `;
 
-const StyledWrapper = styled.form`
+const StyledWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;

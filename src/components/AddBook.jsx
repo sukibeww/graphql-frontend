@@ -118,7 +118,7 @@ const AddBook = () => {
             required: 'Required'
           })}
         >
-          <option disabled selected value> -- select an author -- </option>
+          <option disabled value> -- select an author -- </option>
           {authorListItems}
         </StyledSelectInput>
         {errors.username && errors.username.message}
