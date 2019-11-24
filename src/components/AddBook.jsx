@@ -81,7 +81,6 @@ const AddBook = () => {
   });
   
   const onSubmit = (values) => {
-    console.log(values)
     addBook({ 
       variables: { 
         name: values.name,

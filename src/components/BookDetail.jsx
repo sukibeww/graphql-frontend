@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { getSpecificBookQuery ,deleteBook, getBooksQuery} from '../queries/queries'
 import styled from 'styled-components';
+import { SelectedBook } from '../contexts/SelectedBookContext';
 
 //styled components
 const StyledWrapper = styled.div`
@@ -65,9 +66,9 @@ const ButtonsWrapper = styled.div`
 
 const BookDetails = (props) => {
   const [editMode, toggleEditMode] = useState(false);
-  const [deleted, updateDeleted] = useState(null);
+  const { toggleFreshDelete, freshDelete, selectedBook } = useContext(SelectedBook)
   const { loading, error, data } = useQuery(getSpecificBookQuery, {
-    variables: {id: props.selectedBook}
+    variables: {id: selectedBook.id}
   });
   const [deletedBook] = useMutation(deleteBook);
   
@@ -75,24 +76,24 @@ const BookDetails = (props) => {
   if(error) return <StyledParagraph>Error :(</StyledParagraph>
   if(data.book){
     const onDelete = () => {
-      updateDeleted((prevState) => !prevState);
+      toggleFreshDelete();
       deletedBook({ 
         variables: { 
           id: data.book.id
         },
-        refetchQueries: [{query: getBooksQuery}]
+        refetchQueries: [{query: getBooksQuery},{query: getSpecificBookQuery}]
       })
     }
     return(
       <>
         <StyledWrapper>
-          <StyledParagraph>{deleted ? "Deleted" : `Genre: ${data.book.genre}`}</StyledParagraph>
-          <StyledParagraph>{deleted ? null :`Author: ${data.book.author.name}`}</StyledParagraph>
-          <StyledParagraph>{deleted ? null :`Books by this author:`}</StyledParagraph>
-          {deleted ? null : <StyledBookList>
+          <StyledParagraph>{freshDelete ? "Deleted" : `Genre: ${data.book.genre}`}</StyledParagraph>
+          <StyledParagraph>{freshDelete ? null :`Author: ${data.book.author.name}`}</StyledParagraph>
+          <StyledParagraph>{freshDelete ? null :`Books by this author:`}</StyledParagraph>
+          {freshDelete ? null : <StyledBookList>
             {data.book.author.books.map(({id, name}, index) => {return <StyledListItem key={index}>{name}</StyledListItem>}) }
           </StyledBookList>}
-          {deleted ? null : <ButtonsWrapper>
+          {freshDelete ? null : <ButtonsWrapper>
             <StyledSubmit onClick={(e) => {
                 e.preventDefault();
                 toggleEditMode(prevState => !prevState);

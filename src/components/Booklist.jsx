@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { getBooksQuery } from '../queries/queries'
 import BookDetails from './BookDetail';
 import styled from 'styled-components';
+import {SelectedBook} from '../contexts/SelectedBookContext';
 
 //styled components
 const StyledBookItem = styled.li`
@@ -36,17 +37,19 @@ const StyledParagraph = styled.p`
 `
 
 const Booklist = (props) => { 
-  const [allBooks , setAllBooks] = useState();
-  const [selectedBook, updateSelectedBook] = useState();
+  const  context = useContext(SelectedBook);
+  const {setBook, selectedBook, resetFreshDelete } = context;
   const { loading, error, data } = useQuery(getBooksQuery);
   if (loading) return <StyledParagraph>Loading...</StyledParagraph>;
   if (error) return <StyledParagraph>Error :(</StyledParagraph>;
   const { books } = data;
-  if(books.books){
-    setAllBooks(books.books)
-  }
-  const bookListItems = books.map( ({ id, name }) => {
-      return <StyledBookItem key={id} onClick={() => updateSelectedBook(id)}>{name}</StyledBookItem>;
+  const bookListItems = books.map((book) => {
+      return <StyledBookItem key={book.id} onClick={() => {
+          resetFreshDelete() 
+          setBook(book)}}
+        >
+        {book.name}
+        </StyledBookItem>;
   });
 
   return(
@@ -55,7 +58,8 @@ const Booklist = (props) => {
         <StyledBookList>
           {bookListItems}
         </StyledBookList>
-        <BookDetails selectedBook={selectedBook}/>
+        {selectedBook ? <BookDetails selectedBook={selectedBook}/> : null }
+        
       </div>
     </>
   )
