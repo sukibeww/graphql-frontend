@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { getBooksQuery } from '../queries/queries'
-import BookDetails from './BookDetail';
+import Book from './Book';
 import styled from 'styled-components';
 import {SelectedBook} from '../contexts/SelectedBookContext';
 
@@ -24,6 +24,7 @@ const StyledBookList = styled.ul`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  padding: 0;
 `
 
 const StyledParagraph = styled.p`
@@ -45,7 +46,7 @@ const Booklist = (props) => {
   const { books } = data;
   const bookListItems = books.map((book) => {
       return <StyledBookItem key={book.id} onClick={() => {
-          resetFreshDelete() 
+          resetFreshDelete()
           setBook(book)}}
         >
         {book.name}
@@ -58,8 +59,7 @@ const Booklist = (props) => {
         <StyledBookList>
           {bookListItems}
         </StyledBookList>
-        {selectedBook ? <BookDetails selectedBook={selectedBook}/> : null }
-        
+        {selectedBook ? <Book /> : null }
       </div>
     </>
   )

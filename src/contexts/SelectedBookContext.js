@@ -5,14 +5,16 @@ export const SelectedBook = createContext();
 class SelectedBookProvider extends Component {
   state = {
     selectedBook: null,
-    freshDelete: false
+    freshDelete: false,
+    editMode: false
   }
 
   setBook = (book) =>{
     this.setState((prevState) => {
         return {
           selectedBook: book,
-          freshDelete: prevState.freshDelete
+          freshDelete: prevState.freshDelete,
+          editMode: false
         }
     } )
   }
@@ -21,7 +23,18 @@ class SelectedBookProvider extends Component {
     this.setState((prevState) => {
       return {
         selectedBook: null,
-        freshDelete: !prevState.freshDelete
+        freshDelete: !prevState.freshDelete,
+        editMode: false
+      }
+    })
+  }
+
+  toggleEditMode = () => {
+    this.setState((prevState) => {
+      return {
+        selectedBook: prevState.selectedBook,
+        freshDelete: !prevState.freshDelete,
+        editMode: !prevState.editMode
       }
     })
   }
@@ -30,14 +43,15 @@ class SelectedBookProvider extends Component {
     this.setState((prevState) => {
       return {
         selectedBook: prevState.selectedBook,
-        freshDelete: false
+        freshDelete: false,
+        editMode: false
       }
     })
   }
 
   render() {
     return (
-      <SelectedBook.Provider value={{...this.state, setBook: this.setBook, toggleFreshDelete: this.toggleFreshDelete, resetFreshDelete: this.resetFreshDelete}}>
+      <SelectedBook.Provider value={{...this.state, setBook: this.setBook, toggleFreshDelete: this.toggleFreshDelete, resetFreshDelete: this.resetFreshDelete, toggleEditMode: this.toggleEditMode}}>
         {this.props.children}
       </SelectedBook.Provider>
       );

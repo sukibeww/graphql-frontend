@@ -4,7 +4,12 @@ const getBooksQuery = gql`
   {
     books {
       name
+      genre
       id
+      author{
+        name
+        age
+      }
     }
   }
 `
@@ -56,7 +61,10 @@ const updateBook = gql`
       id
       name
       genre
-      authorId
+      author{
+        id
+        name
+      }
     }
   }
 `
