@@ -41,7 +41,7 @@ const addAuthorMutation = gql`
   }
 `
 
-const getSpecificBookQuery= gql`
+const getSpecificBookQuery = gql`
   query getBookQuery($id: ID){
     book(id: $id) {
       id
@@ -57,7 +57,7 @@ const getSpecificBookQuery= gql`
   }
 `
 
-const deleteBook = gql`
+const deleteBookMutation = gql`
   mutation($id: ID!){
     deleteBook(id: $id){
       genre
@@ -65,7 +65,24 @@ const deleteBook = gql`
   }
 `
 
-const updateBook = gql`
+const deleteAuthorMutation = gql`
+  mutation($id: ID!){
+    deleteAuthor(id: $id){
+      name
+      age
+    }
+  }
+`
+
+const deleteBooksByAuthorMutation = gql`
+  mutation($authorId: ID!){
+    deleteBookByAuthor(id: $authorId){
+      name
+    }
+  }
+`
+
+const updateBookMutation = gql`
   mutation($id: ID!, $name: String!, $genre: String!, $authorId: ID!){
     updateBook(id: $id, name: $name, genre: $genre, authorId: $authorId){
       id
@@ -79,4 +96,4 @@ const updateBook = gql`
   }
 `
 
-export {addAuthorMutation, updateBook, deleteBook, getAuthorsQuery, getBooksQuery, addBookMutation, getSpecificBookQuery};
+export {deleteBooksByAuthorMutation, deleteAuthorMutation, addAuthorMutation, updateBookMutation, deleteBookMutation, getAuthorsQuery, getBooksQuery, addBookMutation, getSpecificBookQuery};

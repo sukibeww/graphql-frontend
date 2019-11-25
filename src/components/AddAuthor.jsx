@@ -8,7 +8,7 @@ import styled from 'styled-components';
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   border: solid 5px #E535AB;
   padding: 30px;
@@ -45,7 +45,7 @@ const StyledSubmit = styled.button`
 
 
 const AddAuthor = () => {
-  const { handleSubmit, register, errors } = useForm();
+  const { handleSubmit, register, errors, reset} = useForm();
   const [addAuthor] = useMutation(addAuthorMutation);
   const onSubmit = (values) => {
     values.age = parseInt(values.age);
@@ -56,6 +56,10 @@ const AddAuthor = () => {
       },
       refetchQueries: [{query: getAuthorsQuery}]
     })
+    reset({
+      name: "",
+      age: ""
+    });
   };
   return(
     <>

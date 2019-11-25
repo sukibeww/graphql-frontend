@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Booklist from './components/Booklist';
 import AddBook from './components/AddBook';
 import AddAuthor from './components/AddAuthor';
+import RemoveAuthor from './components/RemoveAuthor';
 
 //styled components 
 const StyledHeader = styled.h1`
@@ -43,6 +44,7 @@ function App() {
         <FormWrapper>
           <AddBook />
           <AddAuthor />
+          <RemoveAuthor />
         </FormWrapper>
         
       </StyledWrapper>
