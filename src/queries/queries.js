@@ -30,6 +30,16 @@ const addBookMutation = gql`
     }
   }
 `
+//param type is based on graphql variable types such as GraphqlString and GraphqlInt, not based on javascript non-primitive datatype
+const addAuthorMutation = gql`
+  mutation($name: String!, $age: Int!){
+    addAuthor(name: $name, age: $age){
+      id
+      name
+      age
+    }
+  }
+`
 
 const getSpecificBookQuery= gql`
   query getBookQuery($id: ID){
@@ -69,4 +79,4 @@ const updateBook = gql`
   }
 `
 
-export {updateBook, deleteBook, getAuthorsQuery, getBooksQuery, addBookMutation, getSpecificBookQuery};
+export {addAuthorMutation, updateBook, deleteBook, getAuthorsQuery, getBooksQuery, addBookMutation, getSpecificBookQuery};

@@ -13,6 +13,7 @@ const StyledForm = styled.form`
   border: solid 5px #E535AB;
   padding: 30px;
   border-radius: 30px;
+  margin: 30px;
 `
 const StyledHeader = styled.h1`
   font-family: 'Nunito', sans-serif;
