@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useQuery, useMutation} from '@apollo/react-hooks';
 import useForm from "react-hook-form";
 import { SelectedBook } from '../contexts/SelectedBookContext'
-import { updateBookMutation, getBooksQuery, getAuthorsQuery } from '../queries/queries';
+import { updateBookMutation, getBooksQuery, getAuthorsQuery, getSpecificBookQuery } from '../queries/queries';
 
 //styled components
 const StyledParagraph = styled.p`
@@ -65,8 +65,8 @@ const StyledSelectInput = styled.select`
 `
 
 const EditBook = () => {
-  const { toggleEditMode, selectedBook} = useContext(SelectedBook)
-  const { handleSubmit, register, errors } = useForm();
+  const { toggleEditMode, selectedBook, setBook} = useContext(SelectedBook)
+  const { handleSubmit, register } = useForm();
   const {loading, error, data} = useQuery(getAuthorsQuery);
   const [updateBook] = useMutation(updateBookMutation);
   if(loading) return <StyledParagraph>Loading...</StyledParagraph>
@@ -76,41 +76,45 @@ const EditBook = () => {
     return <option key={author.id} value={author.id}>{author.name}</option>
   });
   const onUpdate = (values) => {
-    if(errors){
-      return errors;
-    }
-    else{
-      if(!values.name) values.name = selectedBook.name;
-      if(!values.genre) values.genre = selectedBook.genre;
-      if(!values.author) values.author = selectedBook.author;
-      console.log(selectedBook)
-      updateBook({ 
-        variables: {
-          id: selectedBook.id,
-          name: values.name,
-          genre: values.genre,
-          authorId: values.author
-        },
-        refetchQueries: [{query: getBooksQuery}]
-      })
-      toggleEditMode();
-    }
+    // if(!values.name){
+    //   values.name = selectedBook.name;
+    // } 
+    // if(!values.genre){
+    //   values.genre = selectedBook.genre;
+    // } 
+    // if(!values.author){
+    //   values.author = selectedBook.author.id;
+    // }
+    
+    updateBook({ 
+      variables: {
+        id: selectedBook.id,
+        name: values.name,
+        genre: values.genre,
+        authorId: values.author
+      },
+      refetchQueries: [{query: getBooksQuery}, {query: getSpecificBookQuery}]
+    })
+    toggleEditMode();
   };
   return(
     <>
       <StyledWrapper>
         <form onSubmit={handleSubmit(onUpdate)}>
-          <StyledParagraph>Name: 
-            <StyledInputText name="name" placeholder={selectedBook.name} ref={register()}/>
-          </StyledParagraph>
-          <StyledParagraph>Genre: 
-            <StyledInputText name="genre" placeholder={selectedBook.genre} ref={register()}/>
-          </StyledParagraph>
-          <StyledParagraph>Author: 
-            <StyledSelectInput name="author" placeholder={selectedBook.author} ref={register()}>
-              {authorListItems}
-            </StyledSelectInput>
-          </StyledParagraph>
+          <StyledParagraph>Name:</StyledParagraph>
+          <StyledInputText name="name" placeholder={selectedBook.name} ref={register({
+            required: 'Required'
+          })}/>
+          <StyledParagraph>Genre:</StyledParagraph>
+          <StyledInputText name="genre" placeholder={selectedBook.genre} ref={register({
+            required: 'Required'
+          })}/>
+          <StyledParagraph>Author:</StyledParagraph>
+          <StyledSelectInput name="author" placeholder={selectedBook.author.name} ref={register({
+            required: 'Required'
+          })}>
+            {authorListItems}
+          </StyledSelectInput>
           <ButtonsWrapper>
             <StyledSubmit type="submit">Save</StyledSubmit>
             <StyledSubmit onClick={(e) => {
