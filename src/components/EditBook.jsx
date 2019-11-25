@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useQuery, useMutation} from '@apollo/react-hooks';
 import useForm from "react-hook-form";
 import { SelectedBook } from '../contexts/SelectedBookContext'
-import { updateBook, getBooksQuery, getAuthorsQuery } from '../queries/queries';
+import { updateBookMutation, getBooksQuery, getAuthorsQuery } from '../queries/queries';
 
 //styled components
 const StyledParagraph = styled.p`
@@ -68,7 +68,7 @@ const EditBook = () => {
   const { toggleEditMode, selectedBook} = useContext(SelectedBook)
   const { handleSubmit, register, errors } = useForm();
   const {loading, error, data} = useQuery(getAuthorsQuery);
-  const [updateBookMutation] = useMutation(updateBook);
+  const [updateBook] = useMutation(updateBookMutation);
   if(loading) return <StyledParagraph>Loading...</StyledParagraph>
   if(error) return <StyledParagraph>Error :(</StyledParagraph>
   const {authors} = data;
@@ -84,7 +84,7 @@ const EditBook = () => {
       if(!values.genre) values.genre = selectedBook.genre;
       if(!values.author) values.author = selectedBook.author;
       console.log(selectedBook)
-      updateBookMutation({ 
+      updateBook({ 
         variables: {
           id: selectedBook.id,
           name: values.name,

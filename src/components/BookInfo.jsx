@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import styled from 'styled-components';
 import {SelectedBook} from '../contexts/SelectedBookContext'
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { getSpecificBookQuery , getBooksQuery, deleteBook} from '../queries/queries'
+import { getSpecificBookQuery , getBooksQuery, deleteBookMutation} from '../queries/queries'
 
 const StyledWrapper = styled.div`
   background-color: #51D3F5;
@@ -77,13 +77,13 @@ const BookInfo = () =>{
   const { loading, error, data } = useQuery(getSpecificBookQuery, {
     variables: {id: selectedBook.id}
   });
-  const [deletedBook] = useMutation(deleteBook);
+  const [deleteBook] = useMutation(deleteBookMutation);
   if(loading) return <StyledLogging>Loading</StyledLogging>
   if(error) return <StyledLogging>Error :(</StyledLogging>
   if(data.book){  
     const onDelete = () => {
       toggleFreshDelete();
-      deletedBook({ 
+      deleteBook({ 
         variables: { 
           id: data.book.id
         },
@@ -94,7 +94,7 @@ const BookInfo = () =>{
       <StyledWrapper>
         <StyledParagraph>{selectedBook.name}</StyledParagraph>
         <StyledParagraph>{selectedBook.genre}</StyledParagraph>
-        <StyledParagraph>By: Test</StyledParagraph>
+        <StyledParagraph>By: {selectedBook.author.name}</StyledParagraph>
         <StyledParagraph>Books by this author:</StyledParagraph>
         {freshDelete ? null : <StyledBookList>
           {data.book.author.books.map(({id, name}, index) => {return <StyledListItem key={index}>{name}</StyledListItem>}) }

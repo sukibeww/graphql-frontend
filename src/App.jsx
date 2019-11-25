@@ -6,6 +6,8 @@ import styled from 'styled-components';
 //components
 import Booklist from './components/Booklist';
 import AddBook from './components/AddBook';
+import AddAuthor from './components/AddAuthor';
+import RemoveAuthor from './components/RemoveAuthor';
 
 //styled components 
 const StyledHeader = styled.h1`
@@ -19,7 +21,13 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`;
+`
+
+const FormWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+`
 //apollo client setup
 //PROPERLY PROVIDE THE URI AND IT'S URI NOT URL
 
@@ -33,7 +41,12 @@ function App() {
       <StyledWrapper className="main">
         <StyledHeader>My reading list</StyledHeader>
         <Booklist />
-        <AddBook />
+        <FormWrapper>
+          <AddBook />
+          <AddAuthor />
+          <RemoveAuthor />
+        </FormWrapper>
+        
       </StyledWrapper>
     </ApolloProvider>
   );
