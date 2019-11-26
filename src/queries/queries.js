@@ -93,6 +93,9 @@ const updateBookMutation = gql`
       author{
         id
         name
+        books {
+          name
+        }
       }
     }
   }

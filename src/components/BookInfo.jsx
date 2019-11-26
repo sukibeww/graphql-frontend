@@ -92,9 +92,9 @@ const BookInfo = () =>{
     }
     return(
       <StyledWrapper>
-        <StyledParagraph>{selectedBook.name}</StyledParagraph>
-        <StyledParagraph>{selectedBook.genre}</StyledParagraph>
-        <StyledParagraph>By: {selectedBook.author.name}</StyledParagraph>
+        <StyledParagraph>{data.book.name}</StyledParagraph>
+        <StyledParagraph>{data.book.genre}</StyledParagraph>
+        <StyledParagraph>By: {data.book.author.name}</StyledParagraph>
         <StyledParagraph>Books by this author:</StyledParagraph>
         {freshDelete ? null : <StyledBookList>
           {data.book.author.books.map(({id, name}, index) => {return <StyledListItem key={index}>{name}</StyledListItem>}) }
