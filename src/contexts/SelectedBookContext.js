@@ -6,7 +6,19 @@ class SelectedBookProvider extends Component {
   state = {
     selectedBook: null,
     freshDelete: false,
-    editMode: false
+    editMode: false,
+    authorsList: null
+  }
+
+  setAuthorlist = (authors) =>{ 
+    this.setState((prevState) => {
+      return{ 
+        selectedBook: prevState.selectedBook,
+        freshDelete: prevState.freshDelete,
+        editMode: prevState.editMode,
+        authorsList: authors
+      }
+    })
   }
 
   setBook = (book) =>{
@@ -14,7 +26,8 @@ class SelectedBookProvider extends Component {
         return {
           selectedBook: book,
           freshDelete: prevState.freshDelete,
-          editMode: false
+          editMode: false,
+          authorsList: prevState.authorsList
         }
     } )
   }
@@ -24,7 +37,8 @@ class SelectedBookProvider extends Component {
       return {
         selectedBook: null,
         freshDelete: !prevState.freshDelete,
-        editMode: false
+        editMode: false,
+        authorsList: prevState.authorsList
       }
     })
   }
@@ -34,7 +48,8 @@ class SelectedBookProvider extends Component {
       return {
         selectedBook: prevState.selectedBook,
         freshDelete: !prevState.freshDelete,
-        editMode: !prevState.editMode
+        editMode: !prevState.editMode,
+        authorsList: prevState.authorsList
       }
     })
   }
@@ -44,7 +59,8 @@ class SelectedBookProvider extends Component {
       return {
         selectedBook: prevState.selectedBook,
         freshDelete: false,
-        editMode: false
+        editMode: false,
+        authorsList: prevState.authorsList
       }
     })
   }

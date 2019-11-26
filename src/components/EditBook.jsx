@@ -65,7 +65,7 @@ const StyledSelectInput = styled.select`
 `
 
 const EditBook = () => {
-  const { toggleEditMode, selectedBook, setBook} = useContext(SelectedBook)
+  const { toggleEditMode, selectedBook} = useContext(SelectedBook)
   const { handleSubmit, register } = useForm();
   const {loading, error, data} = useQuery(getAuthorsQuery);
   const [updateBook] = useMutation(updateBookMutation);
@@ -73,19 +73,19 @@ const EditBook = () => {
   if(error) return <StyledParagraph>Error :(</StyledParagraph>
   const {authors} = data;
   const authorListItems = authors.map((author) => {
+    if(author.id === selectedBook.author.id) return <option key={author.id} value={author.id} selected>{author.name}</option>
     return <option key={author.id} value={author.id}>{author.name}</option>
   });
   const onUpdate = (values) => {
-    // if(!values.name){
-    //   values.name = selectedBook.name;
-    // } 
-    // if(!values.genre){
-    //   values.genre = selectedBook.genre;
-    // } 
-    // if(!values.author){
-    //   values.author = selectedBook.author.id;
-    // }
-    
+    if(!values.name){
+      values.name = selectedBook.name;
+    } 
+    if(!values.genre){
+      values.genre = selectedBook.genre;
+    } 
+    if(!values.author){
+      values.author = selectedBook.author.id;
+    }
     updateBook({ 
       variables: {
         id: selectedBook.id,
@@ -103,15 +103,15 @@ const EditBook = () => {
         <form onSubmit={handleSubmit(onUpdate)}>
           <StyledParagraph>Name:</StyledParagraph>
           <StyledInputText name="name" placeholder={selectedBook.name} ref={register({
-            required: 'Required'
+            required: false
           })}/>
           <StyledParagraph>Genre:</StyledParagraph>
           <StyledInputText name="genre" placeholder={selectedBook.genre} ref={register({
-            required: 'Required'
+            required: false
           })}/>
           <StyledParagraph>Author:</StyledParagraph>
           <StyledSelectInput name="author" placeholder={selectedBook.author.name} ref={register({
-            required: 'Required'
+            required: false
           })}>
             {authorListItems}
           </StyledSelectInput>
