@@ -1,68 +1,161 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# My first Graphql Front-end application
 
-## Available Scripts
+To install this application
+```
+npm i
+```
 
-In the project directory, you can run:
+To start the application 
+```
+npm start
+```
 
-### `npm start`
+This project requires the [backend](https://github.com/sukibeww/graphql-backend) application to run and I don't think I'm gonna host it because I didn't implemented any form of security in this application. So if you want to run it locally on your computer, you might need to setup the database environment (MongoDB) ... sorry 😗
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
+## Libraries used in this project
+* React
+* @apollo/react-hooks
+* GraphQL
+* Styled-Components
+* Mongoose ORM
+* Context API
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+---
+## Intro
+It was a very adventurous project because I find the resources for the tech specs of this project is a bit scarce and the whole thing is still a bit alien to me. I did this project out of curiousity because I've heard a bunch of senior devs great things about it and I thought "Hmmm... what so great about it? I'll give it a shot." 
 
-### `npm test`
+## Objective
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Based on my very limited understanding and experience of GraphQL, I just want to make a simple application about books and author that covers all CRUD operations 
+* GET
+* POST
+* PUT/PATCH
+* DELETE
 
-### `npm run build`
+Just to get a hang of the syntax and behaviour, because I expect there will be a major blocker during the development process and there was... a lot ... 😑
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
+## Writing queries 
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+Queries are fairly straight forward
+```javascript
+//query to get a specific book by providing the ID of that specific book 
+const getSpecificBookQuery = gql`
+  query getBookQuery($id: ID){
+    book(id: $id) { // model name has to be exact 
+      id            
+      name
+      genre
+      author{       // relation has to be predefined in backend
+        id
+        name
+        books {     // relation has to be predefined in backend
+          name
+        }
+      }
+    }
+  }
+`
+```
+ GraphQL takes in a string literal and you have to specify whether or not you are writing a query or a mutation (mutation all operations that changes data in database, POST, PUT/PATCH, DELETE). You have to provide the name to that query, I'm used this convention:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* getBookQuery
+* getBooksQuery
+* getAuthorQuery
+* getAuthorsQuery
 
-### `npm run eject`
+but I saw the official  [apollo query documentation](https://www.apollographql.com/docs/react/data/queries/) used this naming convention: ( probably gonna follow this convention for upcoming projects )
+* GET_BOOK
+* GET_BOOKS
+* GET_AUTHOR
+* GET_AUTHORS 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Passing parameter to a query
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```js
+  query getBookQuery($id: ID){
+```
+In main purpose of this code is not passing a parameter to the query, but it is specifying the name of the parameter that is expected from the front end and the datatype of the parameter. 
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+$id //is the parameter name expected from the front end
+ID //is the datatype of the parameter which is GraphQLID 
+```
+[GraphQL datatypes documentation](https://graphql.org/graphql-js/type/)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Expected result of the query
+```js
+//json response
+{
+  "data": {
+    "book": {
+      "id": "5ddbbb2b8cbd3f2ac7126c95",
+      "name": "Harry Potter ",
+      "genre": "Fantasy",
+      "author": {
+        "id": "5ddbbb288cbd3f2ac7126c94",
+        "name": "J K Rowling"
+      }
+    }
+  }
+}
+```
+If we are using a restful API, in order to get this data we have to query 2 time
 
-## Learn More
+* GET /book/:id
+* GET /author/:id 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Starting to feel the power of GraphQL 😈 ? Imagine the possibility !!! 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+---
+## Invoking the query 
+```js
+const { loading, error, data } = useQuery(getSpecificBookQuery, {
+  variables: {id: selectedBook.id}
+});
+```
+You have to do all 3 object destructuring for: 
+* loading 
+* error
+* data
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+I feel a bit constrained by this because I haven't found a good resource to explain why it has to be written in such way, but it breaks if you didn't destructure one of this bad boy. but, by complying to this rules allows us to do something rather cool like prompting a loading animation or prompting a error message like this 
+```js
+if(loading){
+  return <LoadingAnimation /> 
+}
+if(error){
+  return <ErrorMessage />
+}
+if(data.book){
+  return <Book />
+}
+```
+This three variable does not overlap with each other which means that there will not be a loading animation rendered while there's an error during the querying process or loading animation while the query result already retrieved, vice versa.. 🤩 
 
-### Analyzing the Bundle Size
+---
+## Mutation 
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+This is by far the most challanging part of this project, as I explained above mutation is 
 
-### Making a Progressive Web App
+```
+mutation all operations that changes data in database, POST, PUT/PATCH, DELETE 
+//logical generalisation made by me, don't quote me on this.
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+---
+## Writing a mutation 
+```js
+//mutation used to add a new book
+const addBookMutation = gql`
+  mutation($name: String!, $genre: String!, $authorId: ID!){
+    addBook(name: $name, genre: $genre, authorId: $authorId){
+      name
+    }
+  }
+`
+```
 
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Just like writing a query you have to provide a string literal and provide a variable to it, but there's more to it in this case. 
